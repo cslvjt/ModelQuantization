@@ -183,10 +183,14 @@ class ResNet(nn.Module):
         x = self.dequant(x)
         return x
 
+def load_model(weight_path):
+    model = ResNet([2,2,2,2])
+    model.load_state_dict(torch.load(weight_path))
+    return model
 ## Post Training Static Quantization
-def PTSQ():
+def PTSQ(model_fp32):
     # load model
-    model_fp32 = ResNet([2,2,2,2])
+    
     model_fp32.eval()
     model_fp32.qconfig = torch.quantization.get_default_qconfig('x86')
     model_fp32_fused = torch.ao.quantization.fuse_modules(model_fp32,[['conv1','bn1','relu']])
@@ -224,7 +228,17 @@ def QATSQ():
     model_fp32_prepared.eval()
     model_int8 = torch.ao.quantization.convert(model_fp32_prepared)
     return model_int8
-
+import sys
+sys.path.append("..")
+from utils.inference import *
 if __name__ == '__main__':
+    model_fp32 = load_model("../resnet18-f37072fd.pth")
+    model_int8 = PTSQ(model_fp32)
+    print("start inference ResNet18 FP32")
+    inference_speed(model_fp32)
+    inference_imagenet(model_fp32)
+    print("start inference ResNet18 INT8")
+    inference_speed(model_int8)
+    inference_imagenet(model_int8)
     # PTSQ()
-    QATSQ()
+    # QATSQ()
