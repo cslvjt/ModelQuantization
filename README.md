@@ -1,8 +1,8 @@
 # ModelQuantization
 介绍在不同框架下对ResNet18的量化
 # TODO
-+ [] pytorch
-+ [] onnx
++ [x] pytorch
++ [x] onnx
 + [] tensorrt
 + [] ncnn
 # 系统配置
@@ -16,6 +16,8 @@ Windows 11、cpu Intel Core i5-11400F
 |:---:|:---:|:---:|:---:|
 |pytorch|float32|34.7405ms|0.76|
 |pytorch|int8|10.5147ms|0.73|
+|onnx|float32|12.67ms|0.75|
+|onnx|int8|14.30ms|0.73|
 ## 动态量化
 # pytorch
 ##  环境介绍
